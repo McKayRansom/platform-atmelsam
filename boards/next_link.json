@@ -1,0 +1,28 @@
+{
+    "build": {
+        "f_cpu": "32768000L",
+        "cpu": "cortex-m0plus",
+        "mcu": "samd51n20a"
+    },
+    "debug": {
+        "jlink_device": "ATSAMD51N20A"
+    },
+    "frameworks": [
+        "sam-dfp"
+    ],
+    "name": "NextLink MCU",
+    "upload": {
+        "maximum_ram_size": 32768,
+        "maximum_size": 262144,
+        "disable_flushing": true,
+        "native_usb": true,
+        "protocol": "jlink",
+        "protocols": [
+            "jlink"
+        ],
+        "require_upload_port": true,
+        "wait_for_upload_port": true
+    },
+    "url": "https://www.microchip.com/en-us/development-tool/atsaml22-xpro-b",
+    "vendor": "atmel"
+}
