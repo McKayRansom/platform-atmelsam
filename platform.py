@@ -19,7 +19,7 @@ from platformio.public import PlatformBase
 IS_WINDOWS = sys.platform.startswith("win")
 
 
-class AtmelsamPlatform(PlatformBase):
+class AtmelstudioPlatform(PlatformBase):
     def configure_default_packages(self, variables, targets):
         if not variables.get("board"):
             return super().configure_default_packages(variables, targets)
@@ -29,14 +29,14 @@ class AtmelsamPlatform(PlatformBase):
         )
         disabled_pkgs = []
         upload_tool = "tool-openocd"
-        if upload_protocol == "sam-ba":
-            upload_tool = "tool-bossac"
-        elif upload_protocol == "stk500v2":
-            upload_tool = "tool-avrdude"
-        elif upload_protocol == "jlink":
+        # if upload_protocol == "sam-ba":
+            # upload_tool = "tool-bossac"
+        # elif upload_protocol == "stk500v2":
+            # upload_tool = "tool-avrdude"
+        if upload_protocol == "jlink":
             upload_tool = "tool-jlink"
-        elif upload_protocol == "mbctool":
-            upload_tool = "tool-mbctool"
+        # elif upload_protocol == "mbctool":
+            # upload_tool = "tool-mbctool"
 
         if upload_tool:
             for name, opts in self.packages.items():
@@ -50,46 +50,7 @@ class AtmelsamPlatform(PlatformBase):
             self.board_config(variables.get("board")).get("build.core", "arduino"),
         ).lower()
 
-        if "arduino" in variables.get("pioframework", []):
-            framework_package = "framework-arduino-%s" % (
-                "sam" if board.get("build.mcu", "").startswith("at91") else "samd"
-            )
-
-            if build_core != "arduino":
-                framework_package += "-" + build_core
-            if build_core == "mbcwb":
-                self.packages["tool-mbctool"]["type"] = "uploader"
-                self.packages["tool-mbctool"]["optional"] = False
-                framework_package = "framework-arduino-mbcwb"
-
-            self.frameworks["arduino"]["package"] = framework_package
-            if not board.get("build.mcu", "").startswith("samd"):
-                self.packages["framework-arduino-sam"]["optional"] = True
-            if framework_package in self.packages:
-                self.packages[framework_package]["optional"] = False
-            self.packages["framework-cmsis"]["optional"] = False
-            self.packages["framework-cmsis-atmel"]["optional"] = False
-            if build_core in ("tuino0", "reprap"):
-                self.packages["framework-cmsis-atmel"]["version"] = "~1.1.0"
-            if build_core == "adafruit":
-                self.packages["toolchain-gccarmnoneeabi"]["version"] = "~1.90301.0"
-            if build_core in ("adafruit", "seeed"):
-                self.packages["framework-cmsis"]["version"] = "~2.50400.0"
-
-        if (
-            board.get("build.core", "") in ("adafruit", "seeed", "sparkfun")
-            and "tool-bossac" in self.packages
-            and board.get("build.mcu", "").startswith(("samd51", "same51"))
-        ):
-            self.packages["tool-bossac"]["version"] = "~1.10900.0"
-        if "zephyr" in variables.get("pioframework", []):
-            for p in self.packages:
-                if p in ("tool-cmake", "tool-dtc", "tool-ninja"):
-                    self.packages[p]["optional"] = False
-            self.packages["toolchain-gccarmnoneeabi"]["version"] = "~1.80201.0"
-            if not IS_WINDOWS:
-                self.packages["tool-gperf"]["optional"] = False
-
+       
         for name in disabled_pkgs:
             del self.packages[name]
         return super().configure_default_packages(variables, targets)
@@ -112,7 +73,7 @@ class AtmelsamPlatform(PlatformBase):
             debug["tools"] = {}
 
         # Atmel Ice / J-Link / BlackMagic Probe
-        tools = ("blackmagic", "jlink", "atmel-ice", "cmsis-dap", "stlink")
+        tools = ("jlink", "atmel-ice", "cmsis-dap", "stlink")
         for link in tools:
             if link not in upload_protocols or link in debug["tools"]:
                 continue

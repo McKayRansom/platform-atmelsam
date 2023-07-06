@@ -1,3 +1,7 @@
+
+# ATMEL STUDIO 
+Based on Atmel SAM below but modified to import atmel studio .cproj files
+
 # Atmel SAM: development platform for [PlatformIO](https://platformio.org)
 
 [![Build Status](https://github.com/platformio/platform-atmelsam/workflows/Examples/badge.svg)](https://github.com/platformio/platform-atmelsam/actions)
